@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>Combing For Insight in 10,000 Hacker News Posts With Text Clustering</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        :root {
+            --button-bg-color: #ffffff;
+            --button-text-color: var(--color-darkgrey);
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="https://txt.cohere.ai/assets/built/screen.css?v=365f8e2898" />
+
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+    <meta property="og:site_name" content="Context by Cohere" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Combing For Insight in 10,000 Hacker News Posts With Text Clustering" />
+    <meta property="og:description" content="Hacker News is one of the leading online communities to discuss software and startup topics. I’ve frequented the site for over ten years and constantly admire the quality of its signal vs. noise ratio. It houses a wealth of knowledge and insightful discussions accumulated over the years. That invaluable" />
+    <meta property="og:url" content="https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/" />
+    <meta property="og:image" content="https://txt.cohere.ai/content/images/2022/05/Hacker-News-text-analysis-2.png" />
+    <meta property="article:published_time" content="2022-05-09T13:26:00.000Z" />
+    <meta property="article:modified_time" content="2022-05-12T15:45:19.000Z" />
+    <meta property="article:tag" content="Build" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Combing For Insight in 10,000 Hacker News Posts With Text Clustering" />
+    <meta name="twitter:description" content="Hacker News is one of the leading online communities to discuss software and startup topics. I’ve frequented the site for over ten years and constantly admire the quality of its signal vs. noise ratio. It houses a wealth of knowledge and insightful discussions accumulated over the years. That invaluable" />
+    <meta name="twitter:url" content="https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/" />
+    <meta name="twitter:image" content="https://txt.cohere.ai/content/images/2022/05/Hacker-News-text-analysis-2.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Jay Alammar" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Build" />
+    <meta name="twitter:creator" content="@JayAlammar" />
+    <meta property="og:image:width" content="2000" />
+    <meta property="og:image:height" content="990" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Context by Cohere",
+        "url": "https://txt.cohere.ai/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://txt.cohere.ai/content/images/2022/05/Vector.svg",
+            "width": 150,
+            "height": 44
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Jay Alammar",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://txt.cohere.ai/content/images/2022/05/xDO9dBt-_400x400.jpg",
+            "width": 400,
+            "height": 400
+        },
+        "url": "https://txt.cohere.ai/author/jay/",
+        "sameAs": [
+            "https://twitter.com/JayAlammar"
+        ]
+    },
+    "headline": "Combing For Insight in 10,000 Hacker News Posts With Text Clustering",
+    "url": "https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/",
+    "datePublished": "2022-05-09T13:26:00.000Z",
+    "dateModified": "2022-05-12T15:45:19.000Z",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://txt.cohere.ai/content/images/2022/05/Hacker-News-text-analysis-2.png",
+        "width": 2000,
+        "height": 990
+    },
+    "keywords": "Build",
+    "description": "Hacker News is one of the leading online communities to discuss software and\nstartup topics. I’ve frequented the site for over ten years and constantly\nadmire the quality of its signal vs. noise ratio. It houses a wealth of\nknowledge and insightful discussions accumulated over the years. That invaluable\narchive is hard to explore, however, aside from keyword search. I wanted a\nbetter way to explore it. I want the ability to browse by topic, to zoom in on\ninteresting areas and life experiences, a",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://txt.cohere.ai/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 4.48" />
+    <link rel="alternate" type="application/rss+xml" title="Context by Cohere" href="https://txt.cohere.ai/rss/" />
+
+    <script defer src="/public/cards.min.js?v=365f8e2898"></script>
+    <link rel="stylesheet" type="text/css" href="/public/cards.min.css?v=365f8e2898">
+    <style>
+    #ghost-portal-root {
+        display: none !important;
+    }
+    h1, h2, h3, h4, h5 {
+		font-weight: 400;
+	}
+    @media (min-width: 900px){
+        .gh-head-inner {
+    		grid-template-columns: auto 1fr auto;
+
+    	}
+        .gh-head-menu {
+	        justify-content: flex-end;
+        }
+    }
+
+    @media (max-width: 900px) {
+      .home-template #gh-head.has-cover .gh-head-brand {
+	    justify-content: space-between;
+      }
+    }
+    a.gh-head-button {
+        border-radius: 50px;
+        padding: 12px 24px;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+    }
+    a.gh-head-button:hover {
+        border: 1px solid #101010;
+        background: transparent;
+        color: #101010;
+    }
+    .gh-head-logo {
+        display: block !important;
+    }
+    .post-card-image {
+        object-fit: contain;
+        background: transparent;
+    }
+    .site-header-content {
+  		padding: 11vmin 4vmin 5vmin 4vmin;
+  		border-bottom: 1px solid #ddd;
+	}
+
+    .site-header-content p {
+        font-size: 0.8em;
+    }
+    .code-snippet button {
+        background: #ddd;
+        border-radius: 3px;
+        color: #000;
+        padding: 5px 10px;
+    }
+
+    .code-snippet button.selected {
+      background: #000;
+      color: #fff;
+    }
+
+    .code-snippet pre {
+      display: none;
+    }
+    .code-snippet button.copy-button {
+    	padding: 6px 12px;
+		line-height: 1em;
+		color: #101010;
+        background: transparent;
+		font-size: 0.9em;
+		float: right;
+        transition: all 0.3s ease;
+    }
+    .code-snippet button.copy-button:not(.copied):hover {
+        background: #101010;
+        color: #fff;
+    }
+
+     .code-snippet button.copy-button:not(.copied):hover:active {
+        background: #ddd;
+        color: #101010;
+    }
+
+    .code-snippet pre.visible {
+      display: block;
+    }
+    .code-snippet:not(.active) button:first-of-type{
+      background: #000;
+      color: #fff;
+    }
+    .code-snippet:not(.active) pre:first-of-type {
+      display: block;
+    }
+    .kg-button-card a.kg-btn-accent {
+      background: #000;
+      color: #fff;
+    }
+    .token.entity, .token.operator, .token.url {
+        background: transparent !important;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-WLTT8GW');</script>
+<!-- End Google Tag Manager -->
+<style>:root {--ghost-accent-color: #ffffff;}</style>
+
+</head>
+<body class="post-template tag-build">
+<div class="viewport">
+
+    <header id="gh-head" class="gh-head has-cover">
+        <nav class="gh-head-inner inner gh-container">
+
+            <div class="gh-head-brand">
+                <a class="gh-head-logo" href="https://txt.cohere.ai">
+                        <img src="https://txt.cohere.ai/content/images/2022/05/Vector.svg" alt="Context by Cohere" />
+                </a>
+                <a class="gh-burger" role="button">
+                    <div class="gh-burger-box">
+                        <div class="gh-burger-inner"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="gh-head-menu">
+                <ul class="nav">
+    <li class="nav-cohere-ai"><a href="https://cohere.ai">Cohere.ai</a></li>
+    <li class="nav-docs"><a href="https://docs.cohere.ai">Docs</a></li>
+    <li class="nav-pricing"><a href="https://cohere.ai/pricing">Pricing</a></li>
+</ul>
+
+            </div>
+            <div class="gh-head-actions">
+                <div class="gh-social">
+                </div>
+
+                <a class="gh-head-button" href="https://os.cohere.ai/register" data-portal="signup">Get Started</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="site-content">
+
+
+
+
+<main id="site-main" class="site-main">
+    <article class="article post tag-build ">
+
+        <header class="article-header gh-canvas">
+
+            <style>
+                .tags .tag-comma:last-of-type {
+                    display: none;
+                }
+            </style>
+            <div class='tags'>
+                    <a href="/tag/build/" title="Build" class="tag-626bfc6e5e41e1003d27b900">Build</a><span class="tag-comma">,</span>
+            </div>
+
+            <h1 class="article-title">Combing For Insight in 10,000 Hacker News Posts With Text Clustering</h1>
+
+
+            <div class="article-byline">
+                <section class="article-byline-content">
+                    <ul class="author-list">
+                        <li class="author-list-item">
+                            <a href="/author/jay/" class="author-avatar">
+                                <img class="author-profile-image" src="/content/images/size/w100/2022/05/xDO9dBt-_400x400.jpg" alt="Jay Alammar" />
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="article-byline-meta">
+                        <h4 class="author-name"><a href="/author/jay/">Jay Alammar</a></h4>
+                        <div class="byline-meta-content">
+                            <time class="byline-meta-date" datetime="2022-05-09">May 9, 2022</time>
+                            <span class="byline-reading-time"><span class="bull">&bull;</span> 10 min read</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <figure class="article-image">
+                <img
+                    srcset="/content/images/size/w300/2022/05/Hacker-News-text-analysis-2.png 300w,
+                            /content/images/size/w600/2022/05/Hacker-News-text-analysis-2.png 600w,
+                            /content/images/size/w1000/2022/05/Hacker-News-text-analysis-2.png 1000w,
+                            /content/images/size/w2000/2022/05/Hacker-News-text-analysis-2.png 2000w"
+                    sizes="(min-width: 1400px) 1400px, 92vw"
+                    src="/content/images/size/w2000/2022/05/Hacker-News-text-analysis-2.png"
+                    alt="Combing For Insight in 10,000 Hacker News Posts With Text Clustering"
+                />
+                    <figcaption>The <a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_6a.html"><strong><u>orange</u></strong></a> and <a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_7a.html"><strong><u>purple</u></strong></a> clusters contain highly insightful Hacker News topics</figcaption>
+            </figure>
+        </header>
+
+        <section class="gh-content gh-canvas">
+            <p>Hacker News is one of the leading online communities to discuss software and startup topics. I’ve frequented the site for over ten years and constantly admire the quality of its signal vs. noise ratio. It houses a wealth of knowledge and insightful discussions accumulated over the years. That invaluable archive is hard to explore, however, aside from keyword search. I wanted a better way to explore it. I want the ability to browse by topic, to zoom in on interesting areas and life experiences, and be able to extract more of the personal and professional insights I’ve been coming across over the years.</p><p>So I built a <a href="https://assets.cohere.ai/blog/text-clustering/hn10k_clustered.html">map of the top 10,000 Hacker News posts of all time</a>. I visualized it using the embeddings of the titles and kept browsing it and slicing till I zoomed in on some of my favorite areas of Hacker News (turns out 'Ask HN' contained the majority of what I was aiming to find):</p><h3 id="life-experiences-and-advice-threads"><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_6a.html">Life experiences and advice threads</a></h3><p>This cluster (Ask HN cluster #6) had the most personal life insight. The articles here tend to be from people asking for personal insight. Keywords in this cluster (extracted with and algorithm called cTFIDF, more on that below) include advice, deal, work, and life. Example posts include:</p><ul><li><a href="https://news.ycombinator.com/item?id=22018946">What has your work taught you that other people don't realize?</a></li><li><a href="https://news.ycombinator.com/item?id=23490115">My wife might lose the ability to speak in 3 weeks – how to prepare?</a></li><li><a href="https://news.ycombinator.com/item?id=30230620">How do you deal with getting old and feeling lost?</a></li></ul><h3 id="technical-and-personal-development"><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_7a.html">Technical and personal development</a></h3><p>This cluster (Ask HN cluster #7) groups discussions about advancing technical knowledge with some overlap on personal development. Keywords in this cluster include: self, cs, courses, design. Example posts include:</p><ul><li><a href="https://news.ycombinator.com/item?id=19900955">What overlooked class of tools should a self-taught programmer look into</a></li><li><a href="https://news.ycombinator.com/item?id=16535886">Best way to learn modern C++?</a></li><li><a href="https://news.ycombinator.com/item?id=18881649">What should a systems/low-level software engineer know?</a></li></ul><h3 id="software-career-insights-advice-and-discussions"><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_5a.html">Software career insights, advice, and discussions</a></h3><p>This cluster (Ask HN cluster #5) groups discussions about software engineering careers, interviews, and negotiations. Its keywords include: career, tech, developer, remote, software, jobs. Example posts include:</p><ul><li><a href="https://news.ycombinator.com/item?id=21324768">What's a promising area to work on?</a></li><li><a href="https://news.ycombinator.com/item?id=22255301">Advice for a new and inexperienced tech lead?</a></li><li><a href="https://news.ycombinator.com/item?id=30889019">When did 7 interviews become “normal”?</a></li></ul><h3 id="general-content-recommendations-blogspodcasts"><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_3a.html" rel="noopener noreferrer">General content recommendations (blogs/podcasts)</a></h3><p>This cluster (Ask HN cluster #3) revolves around content recommendations. A lot of the posts asked for recommended blogs, books, podcasts, and talks. Example posts include:</p><ul><li><a href="https://news.ycombinator.com/item?id=15089476" rel="noopener noreferrer">What is your favorite CS paper?</a></li><li><a href="https://news.ycombinator.com/item?id=12637239" rel="noopener noreferrer">What's your favorite tech talk?</a></li><li><a href="https://news.ycombinator.com/item?id=13849430" rel="noopener noreferrer">What are some good technology blogs to follow?</a></li></ul><p>These are the clusters I personally found the most interesting. The other clusters in the group are:</p><ul><li><strong><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_0a.html" rel="noopener noreferrer">Tech companies / big tech / HN &amp; Reddit topics (Ask HN cluster #0)</a></strong></li><li><strong><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_1a.html" rel="noopener noreferrer">Recruitment / Who’s hiring / Seeking freelancers (Ask HN cluster #1)</a></strong></li><li><strong><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_2a.html" rel="noopener noreferrer">Software tools, open source, web applications (Ask HN cluster #2)</a></strong></li><li><strong><a href="https://assets.cohere.ai/blog/text-clustering/askhn_cluster_4a.html" rel="noopener noreferrer">Startups / side projects / one-person businesses (Ask HN cluster #4)</a></strong></li></ul><p><strong>Note:</strong> Click on the name of the cluster to see the posts it contains.</p><h2 id="browse-the-maps-yourself"><br>Browse the maps yourself</h2><p>I have two maps for you. They are best viewed on desktop/laptop. The rest of the article goes into how they were created:</p><p>1) <strong><a href="https://assets.cohere.ai/blog/text-clustering/hn10k_clustered.html" rel="noopener noreferrer">Top 10,000 Hacker News articles of all time</a></strong></p><figure class="kg-card kg-video-card"><div class="kg-video-container"><video src="https://txt.cohere.ai/content/media/2022/05/hn10k.webm" poster="https://img.spacergif.org/v1/1610x720/0a/spacer.png" width="1610" height="720" loop autoplay muted playsinline preload="metadata" style="background: transparent url('https://txt.cohere.ai/content/images/2022/05/media-thumbnail-ember431.jpg') 50% 50% / cover no-repeat;" /></video><div class="kg-video-overlay"><button class="kg-video-large-play-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"/></svg></button></div><div class="kg-video-player-container kg-video-hide"><div class="kg-video-player"><button class="kg-video-play-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"/></svg></button><button class="kg-video-pause-icon kg-video-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"/><rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"/></svg></button><span class="kg-video-current-time">0:00</span><div class="kg-video-time">/<span class="kg-video-duration"></span></div><input type="range" class="kg-video-seek-slider" max="100" value="0"><button class="kg-video-playback-rate">1&#215;</button><button class="kg-video-unmute-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"/></svg></button><button class="kg-video-mute-icon kg-video-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"/></svg></button><input type="range" class="kg-video-volume-slider" max="100" value="100"></div></div></div></figure><p>2) <strong><a href="https://assets.cohere.ai/blog/text-clustering/askhn-3k.html" rel="noopener noreferrer">Top 3,000 posts in Ask HN</a></strong></p><figure class="kg-card kg-video-card"><div class="kg-video-container"><video src="https://txt.cohere.ai/content/media/2022/05/ask-hn.webm" poster="https://img.spacergif.org/v1/1610x720/0a/spacer.png" width="1610" height="720" loop autoplay muted playsinline preload="metadata" style="background: transparent url('https://txt.cohere.ai/content/images/2022/05/media-thumbnail-ember451.jpg') 50% 50% / cover no-repeat;" /></video><div class="kg-video-overlay"><button class="kg-video-large-play-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"/></svg></button></div><div class="kg-video-player-container kg-video-hide"><div class="kg-video-player"><button class="kg-video-play-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"/></svg></button><button class="kg-video-pause-icon kg-video-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"/><rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"/></svg></button><span class="kg-video-current-time">0:00</span><div class="kg-video-time">/<span class="kg-video-duration"></span></div><input type="range" class="kg-video-seek-slider" max="100" value="0"><button class="kg-video-playback-rate">1&#215;</button><button class="kg-video-unmute-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"/></svg></button><button class="kg-video-mute-icon kg-video-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"/></svg></button><input type="range" class="kg-video-volume-slider" max="100" value="100"></div></div></div></figure><p>In these figures:</p><ul><li>Each dot is an article</li><li>The closer two dots are, the closer their meanings are</li><li>Hover to read the title</li><li>Click a dot to go to the HN article (or shift+click so it opens in a different tab)</li><li>Raw data: We're making the data of the top 3K "Ask HN" posts available for you to experiment with. This includes both the <a href="https://storage.googleapis.com/cohere-assets/blog/text-clustering/data/askhn3k_df.csv">CSV file containing the posts and their metadata</a>, as well as the <a href="https://storage.googleapis.com/cohere-assets/blog/text-clustering/data/askhn3k_embeds.npy">embeddings vectors</a> of the titles.</li><li>See this <a href="https://github.com/cohere-ai/notebooks/blob/main/notebooks/Analyzing_Hacker_News_with_Six_Language_Understanding_Methods.ipynb">Notebook</a>/<a href="https://colab.research.google.com/github/cohere-ai/notebooks/blob/main/notebooks/Analyzing_Hacker_News_with_Six_Language_Understanding_Methods.ipynb">Colab</a> for all the code and how to load the embeddings, visualize them, cluster them, and use them for semantic search.</li></ul><h2 id="exploring-large-amounts-of-text-with-clustering">Exploring large amounts of text with clustering</h2><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/text-clustering-with-embeddings-1.png" class="kg-image" alt="An image of a group of documents, then after the process of embedding and clustering, the documents are clustered into three different groups." loading="lazy" width="2000" height="790" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/text-clustering-with-embeddings-1.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/text-clustering-with-embeddings-1.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/text-clustering-with-embeddings-1.png 1600w, https://txt.cohere.ai/content/images/size/w2400/2022/05/text-clustering-with-embeddings-1.png 2400w" sizes="(min-width: 720px) 720px"></figure><p>This post demonstrates a common NLP use case often referred to as <em>document clustering</em> or <em>topic modeling</em>. It's the exercise of analyzing a large amount of text information and grouping documents (or headlines in our case) into groups. These can be:</p><ul><li>Analyzing <strong>news articles</strong> to group similar articles (like how Google News groups articles about the same event)</li><li>Analyzing customer <strong>emails</strong> to identify common requests and themes</li><li>Exploring <strong>financial filings</strong> and earning </li></ul><div class="kg-card kg-button-card kg-align-center"><a href="https://os.cohere.ai/register" class="kg-btn kg-btn-accent">Cohere is the NLP toolkit for developers! Start building for free</a></div><h2 id="how-it-was-built">How it was built</h2><p>The map was built using language models and a collection of NLP tools. It revolves around embedding post titles and turning each one into a vector embedding using Cohere’s Embed endpoint. I’ve uploaded the embeddings so you can download and experiment with them.</p><p>So how do you make sense of ten thousand pieces of text without reading them individually?</p><figure class="kg-card kg-video-card kg-card-hascaption"><div class="kg-video-container"><video src="https://txt.cohere.ai/content/media/2022/05/scrolling-titles.webm" poster="https://img.spacergif.org/v1/1356x752/0a/spacer.png" width="1356" height="752" loop autoplay muted playsinline preload="metadata" style="background: transparent url('https://txt.cohere.ai/content/images/2022/05/media-thumbnail-ember544.jpg') 50% 50% / cover no-repeat;" /></video><div class="kg-video-overlay"><button class="kg-video-large-play-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"/></svg></button></div><div class="kg-video-player-container kg-video-hide"><div class="kg-video-player"><button class="kg-video-play-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.14 10.608 2.253.164A1.559 1.559 0 0 0 0 1.557v20.887a1.558 1.558 0 0 0 2.253 1.392L23.14 13.393a1.557 1.557 0 0 0 0-2.785Z"/></svg></button><button class="kg-video-pause-icon kg-video-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="1" width="7" height="22" rx="1.5" ry="1.5"/><rect x="14" y="1" width="7" height="22" rx="1.5" ry="1.5"/></svg></button><span class="kg-video-current-time">0:00</span><div class="kg-video-time">/<span class="kg-video-duration"></span></div><input type="range" class="kg-video-seek-slider" max="100" value="0"><button class="kg-video-playback-rate">1&#215;</button><button class="kg-video-unmute-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.189 2.021a9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1.794a.249.249 0 0 1 .221.133 9.73 9.73 0 0 0 7.924 4.85h.06a1 1 0 0 0 1-1V3.02a1 1 0 0 0-1.06-.998Z"/></svg></button><button class="kg-video-mute-icon kg-video-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.177 4.3a.248.248 0 0 0 .073-.176v-1.1a1 1 0 0 0-1.061-1 9.728 9.728 0 0 0-7.924 4.85.249.249 0 0 1-.221.133H5.25a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h.114a.251.251 0 0 0 .177-.073ZM23.707 1.706A1 1 0 0 0 22.293.292l-22 22a1 1 0 0 0 0 1.414l.009.009a1 1 0 0 0 1.405-.009l6.63-6.631A.251.251 0 0 1 8.515 17a.245.245 0 0 1 .177.075 10.081 10.081 0 0 0 6.5 2.92 1 1 0 0 0 1.061-1V9.266a.247.247 0 0 1 .073-.176Z"/></svg></button><input type="range" class="kg-video-volume-slider" max="100" value="100"></div></div></div><figcaption>There has got to be a better way to explore thousands of article headlines</figcaption></figure><h3 id="getting-the-dataset">Getting the dataset</h3><p>The Hacker News archive is available as a <a href="https://cloud.google.com/bigquery/public-data" rel="noopener noreferrer">public dataset on BigQuery</a>. Once you configure your credentials, you can retrieve posts or comments with a SQL query. This is the query I’ve used to get the top scoring HN posts of all time:</p><!--kg-card-begin: markdown--><pre><code>SELECT *
+FROM `bigquery-public-data.hacker_news.full`
+WHERE TYPE = 'story'
+AND score &gt; 10
+ORDER BY score DESC
+LIMIT 10000
+</code></pre>
+<!--kg-card-end: markdown--><h3 id="getting-meaningful-text-representations-with-embed">Getting meaningful text representations with <code>Embed()</code></h3><p>The next step was to embed these titles so we can examine the dataset based on the meanings of the titles and not just the tokens they contain.</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/text-embedding-hacker-news-articles-with-cohere-language-model.png" class="kg-image" alt loading="lazy" width="2000" height="870" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/text-embedding-hacker-news-articles-with-cohere-language-model.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/text-embedding-hacker-news-articles-with-cohere-language-model.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/text-embedding-hacker-news-articles-with-cohere-language-model.png 1600w, https://txt.cohere.ai/content/images/size/w2400/2022/05/text-embedding-hacker-news-articles-with-cohere-language-model.png 2400w" sizes="(min-width: 720px) 720px"></figure><p>Cohere’s <a href="https://docs.cohere.ai/embed-reference" rel="noopener noreferrer">embed endpoint</a> gives us vector representations from a large embedding language model specifically tuned for text embedding (as opposed to word embedding or text generation).</p><!--kg-card-begin: html--><pre>
+  <code class="language-python">
+  embeds = co.embed(texts=list_of_posts,
+  					model="small",
+  					truncate="LEFT").embeddings
+  </code>
+</pre><!--kg-card-end: html--><p>This gives us a matrix where each post title has a 1024 dimensional vector numerically containing its meaning.</p><h3 id="plotting">Plotting</h3><p>Next, we’ll reduce the embeddings down to two dimensions so we can plot them and explore which posts are similar to each other. We use <a href="https://umap-learn.readthedocs.io/en/latest/" rel="noopener noreferrer">UMAP</a> for this dimensionality reduction.</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/embeddings-to-umap-for-plotting.png" class="kg-image" alt loading="lazy" width="1764" height="810" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/embeddings-to-umap-for-plotting.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/embeddings-to-umap-for-plotting.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/embeddings-to-umap-for-plotting.png 1600w, https://txt.cohere.ai/content/images/2022/05/embeddings-to-umap-for-plotting.png 1764w" sizes="(min-width: 720px) 720px"></figure><p></p><p>The UMAP call looks like this:</p><!--kg-card-begin: html--><pre>
+  <code class="language-python">
+import umap
+
+reducer = umap.UMAP(n_neighbors=100)
+umap_embeds = reducer.fit_transform(embeds)
+  </code>
+</pre><!--kg-card-end: html--><p>Which creates a map that looks like this:</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/top-10k-hacker-news-articles.png" class="kg-image" alt loading="lazy" width="2000" height="985" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/top-10k-hacker-news-articles.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/top-10k-hacker-news-articles.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/top-10k-hacker-news-articles.png 1600w, https://txt.cohere.ai/content/images/2022/05/top-10k-hacker-news-articles.png 2206w" sizes="(min-width: 720px) 720px"></figure><p>The <a href="https://docs.cohere.ai/semantic-search" rel="noopener noreferrer">semantic search guide</a> walks you through how to build such a figure for your data. From my examination, here are some of the clear regions of this map.</p><p><strong>Ask HN</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/ask-hn-highlighted.png" class="kg-image" alt="Titles that contain 'Ask HN' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/ask-hn-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/ask-hn-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/ask-hn-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "Ask HN"</figcaption></figure><p><strong>Show HN</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/show-hn-highlighted.png" class="kg-image" alt="Titles that contain 'Show HN' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/show-hn-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/show-hn-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/show-hn-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "Show HN"</figcaption></figure><p><strong>Startup</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/startup-highlighted.png" class="kg-image" alt="Titles that contain 'Startup' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/startup-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/startup-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/startup-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "Startup"</figcaption></figure><p><strong>Google</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/google-highlighted.png" class="kg-image" alt="Titles that contain 'Google' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/google-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/google-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/google-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "Google"</figcaption></figure><p><strong>Covid</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/covid-highlighted.png" class="kg-image" alt="Titles that contain 'covid' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/covid-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/covid-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/covid-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "covid"</figcaption></figure><p><strong>Database</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/database-highlighted.png" class="kg-image" alt="Titles that contain 'database' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/database-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/database-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/database-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "database"</figcaption></figure><p><strong>Postgres</strong></p><figure class="kg-card kg-image-card kg-card-hascaption"><img src="https://txt.cohere.ai/content/images/2022/05/postgres-highlighted.png" class="kg-image" alt="Titles that contain 'postgres' highlighted on the plot" loading="lazy" width="1025" height="542" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/postgres-highlighted.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/postgres-highlighted.png 1000w, https://txt.cohere.ai/content/images/2022/05/postgres-highlighted.png 1025w" sizes="(min-width: 720px) 720px"><figcaption>Titles that contain the term "postgres"</figcaption></figure><p>It’s easy to spend quite a bit of time exploring such a figure. But to me, it was clear to me that Ask HN is where a lot of insightful discussions are likely to take place.</p><h3 id="zooming-into-ask-hn">Zooming into Ask HN</h3><p>To zoom closer into Ask HN, I made a new query to get the top 3K Ask HN posts of all time. I removed the “Ask HN:” string from the titles before embedding these titles in an attempt (heuristic) to focus the model on the important part of the title (whatever comes after 'ask hn:').</p><!--kg-card-begin: markdown--><pre><code>SELECT *
+FROM `bigquery-public-data.hacker_news.full`
+WHERE TYPE = 'story'
+AND score &gt; 10
+AND CONTAINS_SUBSTR(title, &quot;ask hn&quot;)
+ORDER BY score DESC
+LIMIT 3000
+</code></pre>
+<!--kg-card-end: markdown--><p>Plotting this batch absolutely validates that this is where a lot of the most fascinating threads reside.</p><h3 id="showing-more-information-with-clustering">Showing more information with clustering</h3><p>Let’s now cluster these posts to understand their overall hierarchy. The goal here is to add more visual information instead of relying on hovering over points to reveal their contents.</p><p>We can use <a href="https://scikit-learn.org/stable/modules/clustering.html#k-means" rel="noopener noreferrer">KMeans</a> clustering on the original embeddings to create eight clusters.</p><!--kg-card-begin: markdown--><pre>
+  <code class="language-python">
+from sklearn.cluster import KMeans
+
+# Pick the number of clusters
+n_clusters = 8
+
+# Cluster the embeddings
+kmeans_model = KMeans(n_clusters=n_clusters)
+classes = kmeans_model.fit_predict(embeds)
+  </code>
+</pre><!--kg-card-end: markdown--><p>Which can then be plotted to look like this:</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/ask-hn-clustered.png" class="kg-image" alt loading="lazy" width="907" height="564" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/ask-hn-clustered.png 600w, https://txt.cohere.ai/content/images/2022/05/ask-hn-clustered.png 907w" sizes="(min-width: 720px) 720px"></figure><p>Conceptually, this is what we've done so far:</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/cluster-embeddings-and-overlay-to-umap.png" class="kg-image" alt loading="lazy" width="2000" height="836" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/cluster-embeddings-and-overlay-to-umap.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/cluster-embeddings-and-overlay-to-umap.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/cluster-embeddings-and-overlay-to-umap.png 1600w, https://txt.cohere.ai/content/images/size/w2400/2022/05/cluster-embeddings-and-overlay-to-umap.png 2400w" sizes="(min-width: 720px) 720px"></figure><p>To extract the main keywords for each cluster, we can use the <a href="https://maartengr.github.io/BERTopic/api/ctfidf.html" rel="noopener noreferrer">cTFIDF</a> algorithm from the awesome <a href="https://maartengr.github.io/BERTopic/index.html" rel="noopener noreferrer">BERTopic package</a>. That results in these being the main keywords for each cluster:</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/askhn-clusters-keyword-boxes.png" class="kg-image" alt loading="lazy" width="2000" height="1123" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/askhn-clusters-keyword-boxes.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/askhn-clusters-keyword-boxes.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/askhn-clusters-keyword-boxes.png 1600w, https://txt.cohere.ai/content/images/size/w2400/2022/05/askhn-clusters-keyword-boxes.png 2400w" sizes="(min-width: 720px) 720px"></figure><h3 id="understanding-the-hierarchy-of-the-topics">Understanding the hierarchy of the topics</h3><p>We can use a hierarchical plot to better understand the hierarchy of the clusters. It’s useful that KMeans produces a centroid for each cluster - a point in 1024-dimensional space that we can use to represent the cluster.</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/kmeans-centroid-dendrogram.png" class="kg-image" alt loading="lazy" width="879" height="248" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/kmeans-centroid-dendrogram.png 600w, https://txt.cohere.ai/content/images/2022/05/kmeans-centroid-dendrogram.png 879w" sizes="(min-width: 720px) 720px"></figure><p>For this plot, we use the hierarchy package from scipy:</p><!--kg-card-begin: html--><pre>
+  <code class="language-python">
+Z = hierarchy.linkage(kmeans_model.cluster_centers_, 'single')
+dn = hierarchy.dendrogram(Z, orientation='right',
+                         labels=label_list)
+  </code>
+</pre><!--kg-card-end: html--><p>Here’s how we can read this hierarchy (scanning it from the right to left):</p><ul><li>The first main branching is between the posts for hiring/seeking posts and the remainder of Ask HN. If we’re to break Ask HN into only two clusters, those would be the clearest two clusters.</li><li>From the large cluster (everything except hiring/seeking posts), cluster #3 (life, reading, hn, blogs, books) is the next more distinct cluster we can peel off the big group.</li><li>Imagine a vertical line slicing the tree at a certain value on the X-axis, and that would show you the resulting clusters.</li></ul><p></p><h2 id="back-to-the-10k-hn-dataset">Back to the 10K HN dataset</h2><p>Let us go back to the bigger dataset and see how it would look if we cluster the entire top 10K HN posts in the same way. Because it's a bigger dataset, let's break it down into 15 clusters:</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/hacker-news-10k-clustered.png" class="kg-image" alt loading="lazy" width="2000" height="1058" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/hacker-news-10k-clustered.png 600w, https://txt.cohere.ai/content/images/size/w1000/2022/05/hacker-news-10k-clustered.png 1000w, https://txt.cohere.ai/content/images/size/w1600/2022/05/hacker-news-10k-clustered.png 1600w, https://txt.cohere.ai/content/images/2022/05/hacker-news-10k-clustered.png 2046w" sizes="(min-width: 720px) 720px"></figure><p>If you know how KMeans works, you might be surprised why one cluster can be in two different places. Which is why it's important to note that we are clustering the embeddings (1024 dimensions), and not the coordinates (2 dimensions obtained with UMAP). This is because the embeddings contain so much more information about each post than can be held in simply two dimensions. In fact, for industrial use-cases, you can ramp it up with larger embedding models (At the time of writing, <code>large-20220425</code> is a much larger model which will produce 4,096 dimensional embeddings -- capturing even more information from the text).</p><p>We can also examine the hierarchy of the clusters:</p><figure class="kg-card kg-image-card"><img src="https://txt.cohere.ai/content/images/2022/05/hn10k-dendrogram.png" class="kg-image" alt loading="lazy" width="895" height="248" srcset="https://txt.cohere.ai/content/images/size/w600/2022/05/hn10k-dendrogram.png 600w, https://txt.cohere.ai/content/images/2022/05/hn10k-dendrogram.png 895w" sizes="(min-width: 720px) 720px"></figure><h2 id="next-steps-after-topic-modeling">Next steps after topic modeling</h2><p>Topic modeling reveals a lot about a text archive. The insights revealed by topic modeling can often by built into a system in ways such as:</p><ul><li><strong>Classifying new pieces of text</strong> into the same topic modeling developed in the exploration (if the topics or clusters are broad like "Sports" / "Technology")</li><li><strong>Updating the topic model periodically</strong> (So different articles about a a news event can start to have their own topic/cluster)</li><li>Building a classifier to identify a certain topic or type of document/text. Examples here are content recommendation (I'm definitely building a classifier for Hacker News topics about life experiences and advice threads based on cluster #6 above) and content moderation (where the dataset is the archive of a Discord channel, for example, and the community guidelines don't allow for a specific type of comment). See the <a href="https://docs.cohere.ai/slack-app-summarize-example" rel="noopener noreferrer">Slack bot tutorial</a> for a guide that can get you started on such a use case.</li></ul><h2 id="takeaways">Takeaways</h2><p>Here are some of my takeaways from looking more closely at this process:</p><ul><li><strong>Text is computable:</strong> Language models enable truly fascinating applications of computing, organizing, and retrieving text. We haven't yet scratched the surface in terms of what's possible. We have <a href="https://docs.cohere.ai/intro-to-llms" rel="noopener noreferrer">a visual introduction to language models</a> to help you catch up to this kind of technology. You can <a href="https://os.cohere.ai/">get started</a> and access these models right now.</li><li><strong>NLP Methods:</strong> There's a lot of value in complementing language models with other NLP methods like TF-IDF -- not necessarily only as feature extractors as they've traditionally been used, but in other places in the pipeline as well. Clusters like Cluster #0 lend themselves to entity extraction to identify the companies mentioned</li><li><strong>Clustering Methods:</strong> There are many clustering options to consider and each with many parameters to play with. What we used here was KMeans. We also used hierarchical clustering of the KMeans centroids, but it can be applied on the whole dataset as well. BERTopic uses HDBSCAN which allows clustering without choosing a certain number of clusters (the flip side is sometimes a large "non-clustered" cluster, likely addressable with certain parameter experimentation).</li><li><strong>Number of Clusters:</strong> When exploring a dataset, I find that it’s more intuitive to break the dataset into a small number of clusters at first (say five to eight clusters) then increase the number as you become more familiar with the space.</li><li><strong>Zooming into a Cluster</strong>: In addition to simply increasing the number of clusters, it's often handy to zoom into a specific cluster alone exclusive of the remainder of the dataset. With UMAP, running the dimensionality reduction again on that cluster alone produces a better plot for that cluster.</li><li><strong>Topic Modeling</strong>: A common way of doing topic modeling is using Linear Discriminant Analysis (LDA). One property of that approach is that it assigns each document a certain percentage of membership in each topic. If that's a desirable property for a use case, then it would be interesting to experiment with soft-clustering methods like <a href="https://scikit-learn.org/stable/modules/mixture.html#gmm" rel="noopener noreferrer">Gaussian Mixture Models</a>, for example.</li></ul><h2 id="finally">Finally</h2><p>Be sure to check out the maps linked above and check out the  <a href="https://github.com/cohere-ai/notebooks/blob/main/notebooks/Analyzing_Hacker_News_with_Six_Language_Understanding_Methods.ipynb">Notebook</a>/<a href="https://colab.research.google.com/github/cohere-ai/notebooks/blob/main/notebooks/Analyzing_Hacker_News_with_Six_Language_Understanding_Methods.ipynb">Colab</a> if you want to plot your own data. I'm interested to extend this work to have generative models name the clusters. You can follow and contribute to that experiment in <a href="https://community.cohere.ai/t/naming-text-clusters-of-short-texts/226">this forum post</a>.</p><p></p><p><em><strong>Acknowledgements</strong><br>Thanks to Aidan Gomez, Almond Au, Carlos Timoteo, Jim Wu, and João Araújo for feedback on earlier versions of this post.</em></p>
+        </section>
+
+
+    </article>
+</main>
+
+
+
+
+            <aside class="read-more-wrap">
+                <div class="read-more inner">
+
+<article class="post-card post ">
+
+    <a class="post-card-image-link" href="/article-recommender/">
+        <img class="post-card-image"
+            srcset="/content/images/size/w300/2022/06/article-rec-feat.png 300w,
+                    /content/images/size/w600/2022/06/article-rec-feat.png 600w,
+                    /content/images/size/w1000/2022/06/article-rec-feat.png 1000w,
+                    /content/images/size/w2000/2022/06/article-rec-feat.png 2000w"
+            sizes="(max-width: 1000px) 400px, 800px"
+            src="/content/images/size/w600/2022/06/article-rec-feat.png"
+            alt="Article Recommender with Embed, Classify, and Extract"
+            loading="lazy"
+        />
+    </a>
+
+    <div class="post-card-content">
+
+        <a class="post-card-content-link" href="/article-recommender/">
+            <header class="post-card-header">
+                <h2 class="post-card-title">Article Recommender with Text Embedding, Classification, and Extraction</h2>
+            </header>
+            <div class="post-card-excerpt">
+                <p>A simple demonstration of how we can stack multiple NLP models together to get an output as close as possible to our desired outcome.</p>
+            </div>
+        </a>
+
+        <footer class="post-card-meta">
+            <ul class="author-list">
+                <li class="author-list-item">
+                    <a href="/author/meor/" class="static-avatar">
+                        <img class="author-profile-image" src="/content/images/size/w100/2022/06/meor-turquoise.png" alt="Meor Amer" loading="lazy" />
+                    </a>
+                </li>
+            </ul>
+            <div class="post-card-byline-content">
+                <span class="post-card-byline-author"><a href="/author/meor/">Meor Amer</a></span>
+                <span class="post-card-byline-date"><time datetime="2022-06-21">Jun 21, 2022</time> <span class="bull">&bull;</span> 10 min read</span>
+            </div>
+        </footer>
+
+    </div>
+
+</article>
+
+<article class="post-card post ">
+
+    <a class="post-card-image-link" href="/cohere-partners-with-mila-to-support-the-advancement-of-nlp-research/">
+        <img class="post-card-image"
+            srcset="/content/images/size/w300/2022/06/mila.png 300w,
+                    /content/images/size/w600/2022/06/mila.png 600w,
+                    /content/images/size/w1000/2022/06/mila.png 1000w,
+                    /content/images/size/w2000/2022/06/mila.png 2000w"
+            sizes="(max-width: 1000px) 400px, 800px"
+            src="/content/images/size/w600/2022/06/mila.png"
+            alt="Cohere artners with Mila "
+            loading="lazy"
+        />
+    </a>
+
+    <div class="post-card-content">
+
+        <a class="post-card-content-link" href="/cohere-partners-with-mila-to-support-the-advancement-of-nlp-research/">
+            <header class="post-card-header">
+                <h2 class="post-card-title">Cohere Partners with Mila to Accelerate the Advancement of NLP Research</h2>
+            </header>
+            <div class="post-card-excerpt">
+                <p>Like-minded partners can achieve great things together, and language presents an enormous opportunity and thought-provoking challenge for AI researchers and developers alike. That’s why we are so excited to begin collaborating with our newest partner, Mila, to advance scientific research on harnessing the power of language for the benefit</p>
+            </div>
+        </a>
+
+        <footer class="post-card-meta">
+            <ul class="author-list">
+                <li class="author-list-item">
+                    <a href="/author/elizabeth/" class="static-avatar">
+                        <img class="author-profile-image" src="/content/images/size/w100/2022/06/Image-from-iOS--1-.jpg" alt="Elizabeth Gao" loading="lazy" />
+                    </a>
+                </li>
+            </ul>
+            <div class="post-card-byline-content">
+                <span class="post-card-byline-author"><a href="/author/elizabeth/">Elizabeth Gao</a></span>
+                <span class="post-card-byline-date"><time datetime="2022-06-17">Jun 17, 2022</time> <span class="bull">&bull;</span> 2 min read</span>
+            </div>
+        </footer>
+
+    </div>
+
+</article>
+
+<article class="post-card post ">
+
+    <a class="post-card-image-link" href="/introducing-cohere-for-ai/">
+        <img class="post-card-image"
+            srcset="/content/images/size/w300/2022/06/Blog-header-image---Desktop--3--1.png 300w,
+                    /content/images/size/w600/2022/06/Blog-header-image---Desktop--3--1.png 600w,
+                    /content/images/size/w1000/2022/06/Blog-header-image---Desktop--3--1.png 1000w,
+                    /content/images/size/w2000/2022/06/Blog-header-image---Desktop--3--1.png 2000w"
+            sizes="(max-width: 1000px) 400px, 800px"
+            src="/content/images/size/w600/2022/06/Blog-header-image---Desktop--3--1.png"
+            alt="Introducing: Cohere For AI"
+            loading="lazy"
+        />
+    </a>
+
+    <div class="post-card-content">
+
+        <a class="post-card-content-link" href="/introducing-cohere-for-ai/">
+            <header class="post-card-header">
+                <h2 class="post-card-title">Introducing: Cohere For AI</h2>
+            </header>
+            <div class="post-card-excerpt">
+                <p>The best and brightest minds in machine learning transcend borders. That’s why we’re excited to announce Cohere For AI, a non-profit research lab and community dedicated to contributing fundamental research in machine learning, working to solve some of the field's most challenging problems. As part of our work,</p>
+            </div>
+        </a>
+
+        <footer class="post-card-meta">
+            <ul class="author-list">
+                <li class="author-list-item">
+                    <a href="/author/aidan/" class="static-avatar">
+                        <img class="author-profile-image" src="/content/images/size/w100/2022/05/Aidan_Gomez_by_John_Cairns_11.3.22-45-Edit.jpg" alt="Aidan Gomez" loading="lazy" />
+                    </a>
+                </li>
+                <li class="author-list-item">
+                    <a href="/author/ivan/" class="static-avatar">
+                        <img class="author-profile-image" src="/content/images/size/w100/2022/06/50786153_1019917648192469_8398890121641852928_n.jpg" alt="Ivan Zhang" loading="lazy" />
+                    </a>
+                </li>
+            </ul>
+            <div class="post-card-byline-content">
+                <span class="post-card-byline-author"><a href="/author/aidan/">Aidan Gomez</a>, <a href="/author/ivan/">Ivan Zhang</a></span>
+                <span class="post-card-byline-date"><time datetime="2022-06-14">Jun 14, 2022</time> <span class="bull">&bull;</span> 2 min read</span>
+            </div>
+        </footer>
+
+    </div>
+
+</article>
+                </div>
+            </aside>
+
+
+
+    </div>
+
+    <footer class="site-footer outer">
+        <div class="inner">
+            <section class="copyright"><a href="https://cohere.ai">Cohere</a> &copy; 2022</section>
+            <nav class="site-footer-nav">
+                <ul class="nav">
+    <li class="nav-cohere-ai"><a href="https://cohere.ai">Cohere.ai</a></li>
+    <li class="nav-get-started"><a href="https://os.cohere.ai/register">Get Started</a></li>
+    <li class="nav-about"><a href="https://cohere.ai/about">About</a></li>
+    <li class="nav-classify"><a href="https://os.cohere.ai/classify">Classify</a></li>
+    <li class="nav-generate"><a href="https://os.cohere.ai/generate">Generate</a></li>
+    <li class="nav-responsibility"><a href="https://os.cohere.ai/responsibility">Responsibility</a></li>
+    <li class="nav-documentation"><a href="https://docs.cohere.ai/">Documentation</a></li>
+    <li class="nav-careers"><a href="https://jobs.lever.co/cohere">Careers</a></li>
+</ul>
+
+            </nav>
+        </div>
+    </footer>
+
+</div>
+
+
+<script
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous">
+</script>
+<script src="https://txt.cohere.ai/assets/built/casper.js?v=365f8e2898"></script>
+<script>
+$(document).ready(function () {
+    // Mobile Menu Trigger
+    $('.gh-burger').click(function () {
+        $('body').toggleClass('gh-head-open');
+    });
+    // FitVids - Makes video embeds responsive
+    $(".gh-content").fitVids();
+});
+</script>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WLTT8GW"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-javascript.min.js" integrity="sha512-jwrwRWZWW9J6bjmBOJxPcbRvEBSQeY4Ad0NEXSfP0vwYi/Yu9x5VhDBl3wz6Pnxs8Rx/t1P8r9/OHCRciHcT7Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-bash.min.js" integrity="sha512-ZqfG//sXQwAA7DOArFJyMmZQ3knKe+0ft3tPQZPvDPJR04IatmhVO5pTazVV+fLVDYSy28PhoBeUj5wxGRiGAA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-go.min.js" integrity="sha512-w200Nz1i9KgDNi+IpPMgpZBVRIvfVK/V5vskyHjkz7XJkVnRJcb1uNmpiHhDv0/Ln+GG2VqScKKz/1izBfg64Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0z6VeNqvRvH4/d5M4sHJbQQUToMBtodq4HaV4fa+WV2UTfoperElm66c9/8cKmQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript">
+    $(document).on('click', '.code-snippet button:not(.copy-button)', function(){
+      var context = $(this).parent('.code-snippet');
+      context.addClass('active');
+      context.find('pre').removeClass('visible');
+      context.find('button').removeClass('selected');
+      context.find(`.${$(this).text()}`).toggleClass('visible')
+      context.append(r)
+      $(this).addClass('selected');
+    })
+
+    var r= $('<button type="button" class="copy-button">Copy</button>');
+
+    $('.code-snippet').append(r);
+
+    $(document).on('click', '.copy-button', function(e) {
+        e.preventDefault();
+        var context = $(this).parent('.code-snippet');
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($(context).find('code:visible').text()).select();
+        try {
+            var successful = document.execCommand('copy');
+            $(this).text('copied!').addClass('copied');
+            setTimeout(() => {
+                $(this).text('copy').removeClass('copied');
+            }, 2000);
+          } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+          }
+    })
+</script>
+
+</body>
+</html>

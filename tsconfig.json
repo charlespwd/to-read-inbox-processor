@@ -1,4 +1,5 @@
 {
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "inlineSourceMap": true,
@@ -12,12 +13,11 @@
     "isolatedModules": true,
     "lib": [
       "DOM",
-      "ES5",
-      "ES6",
-      "ES7"
+      "es2020"
     ]
   },
   "include": [
     "**/*.ts"
-  ]
+  ],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

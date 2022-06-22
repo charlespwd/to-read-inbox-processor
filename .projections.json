@@ -1,0 +1,12 @@
+{
+  "*.ts": {
+    "alternate": "{}.spec.ts"
+  },
+  "*.spec.ts": {
+    "alternate": "{}.ts"
+  },
+  "*": {
+    "make": "yarn test",
+    "dispatch": "yarn test"
+  }
+}
