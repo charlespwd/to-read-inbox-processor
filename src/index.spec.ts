@@ -28,6 +28,14 @@ const github = fs.promises.readFile(
   path.join(__dirname, '../test/github.html'),
   'utf8',
 );
+const hnComment = fs.promises.readFile(
+  path.join(__dirname, '../test/hnComment.html'),
+  'utf8',
+);
+const hnComments = fs.promises.readFile(
+  path.join(__dirname, '../test/hnComments.html'),
+  'utf8',
+);
 
 describe('Module: fetchMetadata', () => {
   let fetch;
@@ -38,21 +46,23 @@ describe('Module: fetchMetadata', () => {
     fetch
       .withArgs({ url: 'https://github.com/hello/world' })
       .returns(github);
-    fetch
-      .withArgs({ url: 'https://article1.com' })
-      .returns(article1);
-    fetch
-      .withArgs({ url: 'https://article2.com' })
-      .returns(article2);
+    fetch.withArgs({ url: 'https://article1.com' }).returns(article1);
+    fetch.withArgs({ url: 'https://article2.com' }).returns(article2);
     fetch
       .withArgs({ url: 'https://article3.com?a=b' })
       .returns(article3);
+    fetch.withArgs({ url: 'https://article4.com' }).returns(article4);
+    fetch.withArgs({ url: 'https://website.com' }).returns(website);
     fetch
-      .withArgs({ url: 'https://article4.com' })
-      .returns(article4);
+      .withArgs({
+        url: 'https://news.ycombinator.com/item?id=22043223',
+      })
+      .returns(hnComment);
     fetch
-      .withArgs({ url: 'https://website.com' })
-      .returns(website);
+      .withArgs({
+        url: 'https://news.ycombinator.com/item?id=31846593',
+      })
+      .returns(hnComments);
   });
 
   it('should return something appropriate for a GitHub repo', async () => {
@@ -98,7 +108,8 @@ describe('Module: fetchMetadata', () => {
   it('should return something appropriate for an article (3)', async () => {
     result = await fetchMetadata('https://article3.com?a=b', fetch);
     expect(result).to.eql({
-      title: 'Donald Knuth on work habits, problem solving, and happiness',
+      title:
+        'Donald Knuth on work habits, problem solving, and happiness',
       author: undefined,
       description: undefined,
       url: 'https://article3.com?a=b',
@@ -111,12 +122,12 @@ describe('Module: fetchMetadata', () => {
     expect(result).to.eql({
       title: 'How to Write Better with The Why, What, How Framework',
       author: 'Eugene Yan',
-      description: 'Three documents I write (one-pager, design doc, after-action review) and how I structure them.',
+      description:
+        'Three documents I write (one-pager, design doc, after-action review) and how I structure them.',
       url: 'https://eugeneyan.com/writing/writing-docs-why-what-how/',
       type: 'article',
     });
   });
-
 
   it('should return something appropriate for a website', async () => {
     result = await fetchMetadata('https://website.com', fetch);
@@ -127,6 +138,34 @@ describe('Module: fetchMetadata', () => {
         'Collection of thinking tools and frameworks to help you solve problems, make decisions and understand systems.',
       url: 'https://website.com',
       type: 'website',
+    });
+  });
+
+  it('should return something appropriate for a hacker news comment', async () => {
+    result = await fetchMetadata(
+      'https://news.ycombinator.com/item?id=22043223',
+      fetch,
+    );
+    expect(result).to.eql({
+      title: 'HN comment (22043223)',
+      author: 'beaker52',
+      description: undefined,
+      url: 'https://news.ycombinator.com/item?id=22043223',
+      type: 'comments',
+    });
+  });
+
+  it('should return something appropriate for a hacker news link', async () => {
+    result = await fetchMetadata(
+      'https://news.ycombinator.com/item?id=31846593',
+      fetch,
+    );
+    expect(result).to.eql({
+      title: 'HN comment (31846593)',
+      author: 'f311a',
+      description: undefined,
+      url: 'https://news.ycombinator.com/item?id=31846593',
+      type: 'comments',
     });
   });
 });

@@ -19,6 +19,7 @@ enum SourceType {
   PAPER = 'paper',
   BOOK = 'book',
   LIST = 'list',
+  COMMENTS = 'comments',
   REPO = 'repo',
   TWEET = 'tweet',
   WEBSITE = 'website',
@@ -42,13 +43,18 @@ export async function fetchMetadata(
   return {
     title: getTitle($, canonical),
     author: getAuthor($, canonical),
-    description: getDescription($),
+    description: getDescription($, canonical),
     type: getType($, canonical),
     url: canonical,
   };
 }
 
 export function getTitle($: cheerio.CheerioAPI, url: string): string {
+  if (isHnComment(url)) {
+    const id = getHnId(url);
+    return `HN comment (${id})`;
+  }
+
   if (/github.com/i.test(url)) {
     const match = url.match(/github.com\/([^\/]*)\/([^\/]*)/);
     if (match) {
@@ -61,18 +67,32 @@ export function getTitle($: cheerio.CheerioAPI, url: string): string {
   );
 }
 
+function getHnId(url: string) {
+  const tmp = new URL(url);
+  const search = new URLSearchParams(tmp.search);
+  return search.get('id');
+}
+
 export function getAuthor(
   $: cheerio.CheerioAPI,
   url: string,
 ): string | undefined {
+  if (isHnComment(url)) {
+    const id = getHnId(url);
+    return (
+      $(`#${id} .hnuser`).text().trim() ||
+      $(`#${id} + tr .hnuser`).text().trim()
+    );
+  }
+
   if (/github.com/i.test(url)) {
     const match = url.match(/github.com\/([^\/]*)/);
     return match?.[1];
   }
 
-  const meta = $('meta[name=author]')
+  const meta = $('meta[name=author]');
   if (meta.length > 0) {
-    return meta.attr('content')
+    return meta.attr('content');
   }
 
   const ldContent = $(
@@ -106,9 +126,17 @@ export function getAuthor(
   return undefined;
 }
 
+function isHnComment(url: string) {
+  return /news.ycombinator.com/i.test(url);
+}
+
 export function getDescription(
   $: cheerio.CheerioAPI,
+  url: string,
 ): string | undefined {
+  if (isHnComment(url)) {
+    return undefined;
+  }
   return (
     $('meta[name=description]').attr('content') ||
     $('meta[property="og:description"]').attr('content')
@@ -129,6 +157,7 @@ export function getType(
 ): SourceType {
   switch (true) {
     case /news.ycombinator/i.test(url):
+      return SourceType.COMMENTS;
     case /reddit.com/i.test(url):
       return SourceType.LIST;
     case /amazon\.(com|ca)/i.test(url):
@@ -138,7 +167,9 @@ export function getType(
     case /twitter.com/i.test(url):
       return SourceType.TWEET;
     case $('meta[property="og:type"]').length > 0:
-      return $('meta[property="og:type"]').attr('content') as SourceType;
+      return $('meta[property="og:type"]').attr(
+        'content',
+      ) as SourceType;
     default:
       return SourceType.WEBSITE;
   }
