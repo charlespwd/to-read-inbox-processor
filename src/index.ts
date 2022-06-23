@@ -14,7 +14,7 @@
 import { RequestUrlParam } from 'obsidian';
 import * as cheerio from 'cheerio';
 
-enum SourceType {
+export enum SourceType {
   ARTICLE = 'article',
   PAPER = 'paper',
   BOOK = 'book',
@@ -175,6 +175,27 @@ export function getType(
   }
 }
 
+export function safeTitle(s: string) {
+  return s
+    .replace(/[*"\/<>:|?]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function getNoteTitle(meta: SourceMetadata) {
+  if (meta.author && meta.title) {
+    return safeTitle(`${meta.author}'s ${meta.title}`);
+  }
+  return safeTitle(meta.title);
+}
+
+export function getUrlsInDoc(doc: string): string[] {
+  return doc
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => /^https?/.test(l));
+}
+
 export function toNote(meta: SourceMetadata): string {
   const now = new Date();
   return `---
@@ -182,6 +203,8 @@ created_date: ${now.toISOString()}
 author: ${meta.author}
 type: ${meta.type}
 url: "${meta.url}"
+description: >
+  ${meta.description?.replace(/\n\s*/g, '\n  ')}
 aliases:
   - "${meta.title}"
 tags:

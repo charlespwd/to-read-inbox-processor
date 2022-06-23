@@ -1,5 +1,11 @@
 import { expect } from 'chai';
-import { fetchMetadata, toNote } from './index';
+import {
+  fetchMetadata,
+  toNote,
+  getUrlsInDoc,
+  getNoteTitle,
+  SourceType,
+} from './index';
 import * as sinon from 'sinon';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -151,7 +157,7 @@ describe('Module: fetchMetadata', () => {
       author: 'beaker52',
       description: undefined,
       url: 'https://news.ycombinator.com/item?id=22043223',
-      type: 'comments',
+      type: SourceType.COMMENTS,
     });
   });
 
@@ -165,7 +171,7 @@ describe('Module: fetchMetadata', () => {
       author: 'f311a',
       description: undefined,
       url: 'https://news.ycombinator.com/item?id=31846593',
-      type: 'comments',
+      type: SourceType.COMMENTS,
     });
   });
 });
@@ -191,9 +197,9 @@ describe('Unit: toNote', () => {
     actual = toNote({
       title: 'HN comment (31846593)',
       author: 'f311a',
-      description: 'hello world',
+      description: 'hello world\nok',
       url: 'https://news.ycombinator.com/item?id=31846593',
-      type: 'comments',
+      type: SourceType.COMMENTS,
     });
 
     expected = `---
@@ -201,6 +207,9 @@ created_date: 2019-02-01T00:00:00.000Z
 author: f311a
 type: comments
 url: "https://news.ycombinator.com/item?id=31846593"
+description: >
+  hello world
+  ok
 aliases:
   - "HN comment (31846593)"
 tags:
@@ -213,5 +222,59 @@ tags:
 <https://news.ycombinator.com/item?id=31846593>
 `;
     expect(actual).to.eql(expected);
+  });
+});
+
+describe('Unit: getUrlsInDoc', () => {
+  it('should return all the urls in a doc', () => {
+    const input = `
+https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/
+
+https://news.ycombinator.com/item?id=22043223
+https://thenewstack.io/javascript-hydration-is-a-workaround-not-a-solution/
+
+https://github.com/google/diff-match-patch
+
+not an url https://untools.co/
+
+https://shuvomoy.github.io/blogs/posts/Knuth-on-work-habits-and-problem-solving-and-happiness/?utm_source=hackernewsletter&utm_medium=email&utm_term=fav
+
+https://github.com/PlasmoHQ/plasmo
+
+https://en.wikipedia.org/wiki/Ship_of_Theseus
+`;
+    expect(getUrlsInDoc(input)).to.eql([
+      'https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/',
+      'https://news.ycombinator.com/item?id=22043223',
+      'https://thenewstack.io/javascript-hydration-is-a-workaround-not-a-solution/',
+      'https://github.com/google/diff-match-patch',
+      'https://shuvomoy.github.io/blogs/posts/Knuth-on-work-habits-and-problem-solving-and-happiness/?utm_source=hackernewsletter&utm_medium=email&utm_term=fav',
+      'https://github.com/PlasmoHQ/plasmo',
+      'https://en.wikipedia.org/wiki/Ship_of_Theseus',
+    ]);
+  });
+});
+
+describe('Unit: getNoteTile', () => {
+  it('should return appropriate values', () => {
+    expect(
+      getNoteTitle({
+        title: 'hello * world?',
+        url: 'hh',
+        author: undefined,
+        description: undefined,
+        type: SourceType.COMMENTS,
+      }),
+    ).to.eql('hello world');
+
+    expect(
+      getNoteTitle({
+        title: 'hello * world?',
+        url: 'hh',
+        author: 'bret@hotmail.com',
+        description: undefined,
+        type: SourceType.COMMENTS,
+      }),
+    ).to.eql('bret@hotmail.com\'s hello world');
   });
 });
