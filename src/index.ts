@@ -174,3 +174,23 @@ export function getType(
       return SourceType.WEBSITE;
   }
 }
+
+export function toNote(meta: SourceMetadata): string {
+  const now = new Date();
+  return `---
+created_date: ${now.toISOString()}
+author: ${meta.author}
+type: ${meta.type}
+url: "${meta.url}"
+aliases:
+  - "${meta.title}"
+tags:
+  - toread
+  - lit
+---
+
+## Source
+
+<${meta.url}>
+`;
+}

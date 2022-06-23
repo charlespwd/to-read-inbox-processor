@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { fetchMetadata } from './index';
+import { fetchMetadata, toNote } from './index';
 import * as sinon from 'sinon';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -39,7 +39,7 @@ const hnComments = fs.promises.readFile(
 
 describe('Module: fetchMetadata', () => {
   let fetch;
-  let result;
+  let actual;
 
   beforeEach(() => {
     fetch = sinon.stub();
@@ -66,11 +66,11 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for a GitHub repo', async () => {
-    result = await fetchMetadata(
+    actual = await fetchMetadata(
       'https://github.com/hello/world',
       fetch,
     );
-    expect(result).to.eql({
+    expect(actual).to.eql({
       title: 'diff-match-patch',
       author: 'google',
       description:
@@ -81,8 +81,8 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for an article', async () => {
-    result = await fetchMetadata('https://article1.com', fetch);
-    expect(result).to.eql({
+    actual = await fetchMetadata('https://article1.com', fetch);
+    expect(actual).to.eql({
       title:
         'Combing For Insight in 10,000 Hacker News Posts With Text Clustering',
       author: 'Jay Alammar',
@@ -94,8 +94,8 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for an article (2)', async () => {
-    result = await fetchMetadata('https://article2.com', fetch);
-    expect(result).to.eql({
+    actual = await fetchMetadata('https://article2.com', fetch);
+    expect(actual).to.eql({
       title: 'JavaScript Hydration Is a Workaround, Not a Solution',
       author: 'Miško Hevery',
       description:
@@ -106,8 +106,8 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for an article (3)', async () => {
-    result = await fetchMetadata('https://article3.com?a=b', fetch);
-    expect(result).to.eql({
+    actual = await fetchMetadata('https://article3.com?a=b', fetch);
+    expect(actual).to.eql({
       title:
         'Donald Knuth on work habits, problem solving, and happiness',
       author: undefined,
@@ -118,8 +118,8 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for an article (4)', async () => {
-    result = await fetchMetadata('https://article4.com', fetch);
-    expect(result).to.eql({
+    actual = await fetchMetadata('https://article4.com', fetch);
+    expect(actual).to.eql({
       title: 'How to Write Better with The Why, What, How Framework',
       author: 'Eugene Yan',
       description:
@@ -130,8 +130,8 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for a website', async () => {
-    result = await fetchMetadata('https://website.com', fetch);
-    expect(result).to.eql({
+    actual = await fetchMetadata('https://website.com', fetch);
+    expect(actual).to.eql({
       title: 'Tools for better thinking',
       author: undefined,
       description:
@@ -142,11 +142,11 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for a hacker news comment', async () => {
-    result = await fetchMetadata(
+    actual = await fetchMetadata(
       'https://news.ycombinator.com/item?id=22043223',
       fetch,
     );
-    expect(result).to.eql({
+    expect(actual).to.eql({
       title: 'HN comment (22043223)',
       author: 'beaker52',
       description: undefined,
@@ -156,16 +156,62 @@ describe('Module: fetchMetadata', () => {
   });
 
   it('should return something appropriate for a hacker news link', async () => {
-    result = await fetchMetadata(
+    actual = await fetchMetadata(
       'https://news.ycombinator.com/item?id=31846593',
       fetch,
     );
-    expect(result).to.eql({
+    expect(actual).to.eql({
       title: 'HN comment (31846593)',
       author: 'f311a',
       description: undefined,
       url: 'https://news.ycombinator.com/item?id=31846593',
       type: 'comments',
     });
+  });
+});
+
+describe('Unit: toNote', () => {
+  let actual;
+  let expected;
+  let clock;
+
+  beforeEach(() => {
+    clock = sinon.useFakeTimers({
+      now: new Date(2019, 1, 1, 0, 0),
+      shouldAdvanceTime: true,
+      toFake: ['Date'],
+    });
+  });
+
+  afterEach(() => {
+    clock.restore();
+  });
+
+  it('should return a templated note', () => {
+    actual = toNote({
+      title: 'HN comment (31846593)',
+      author: 'f311a',
+      description: 'hello world',
+      url: 'https://news.ycombinator.com/item?id=31846593',
+      type: 'comments',
+    });
+
+    expected = `---
+created_date: 2019-02-01T00:00:00.000Z
+author: f311a
+type: comments
+url: "https://news.ycombinator.com/item?id=31846593"
+aliases:
+  - "HN comment (31846593)"
+tags:
+  - toread
+  - lit
+---
+
+## Source
+
+<https://news.ycombinator.com/item?id=31846593>
+`;
+    expect(actual).to.eql(expected);
   });
 });
