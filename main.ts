@@ -1,13 +1,5 @@
-import {
-  App,
-  Editor,
-  MarkdownView,
-  Modal,
-  Notice,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-} from 'obsidian';
+import { Plugin } from 'obsidian';
+import { processToReadInbox } from './src/process';
 
 export default class MyPlugin extends Plugin {
   async onload() {
@@ -15,9 +7,7 @@ export default class MyPlugin extends Plugin {
     this.addCommand({
       id: 'process-to-read-inbox',
       name: 'Process to read inbox',
-      callback: () => {
-        // TODO processInbox
-      },
+      callback: () => processToReadInbox(this.app),
     });
   }
 

@@ -1,17 +1,4 @@
-// for each URL in todo/toread:
-// 	 fetch URL
-// 	 	 from head, get author
-// 	 	 from head, get title
-// 	 	 from head, get keywords
-// 	 	 from url and content, get type (article, book, paper, etc)
-// 	 return if lite note has url metadata == URL
-// 	 create note
-// 	 	 using lit note template
-// 	 	 title = safe($author's $title)
-// 	 add metadata to note
-// 	 add link to note
-// 	 remove URL from todo/toread
-import { RequestUrlParam } from 'obsidian';
+import { RequestUrlParam, Vault } from 'obsidian';
 import * as cheerio from 'cheerio';
 
 export enum SourceType {
@@ -31,6 +18,45 @@ interface SourceMetadata {
   description: string | undefined;
   type: SourceType;
   url: string;
+}
+
+export enum Result {
+  Ok = 'Ok',
+  Err = 'Err',
+}
+
+export async function processEntry(
+  meta: SourceMetadata,
+  vault: Vault,
+): Promise<Result> {
+  try {
+    await vault.create(`notes/${getNoteTitle(meta)}.md`, toNote(meta));
+    return Result.Ok;
+  } catch (e) {
+    return Result.Err;
+  }
+}
+
+function zip<T>(a: string[], b: T[]): [string, T][] {
+  let result: [string, T][] = [];
+  for (let i = 0; i < a.length; i++) {
+    result.push([a[i], b[i]]);
+  }
+  return result;
+}
+
+export function updateContentsFromResults(
+  contents: string,
+  urls: string[],
+  results: Result[],
+): string {
+  let updated = contents;
+  for (const [url, result] of zip(urls, results)) {
+    if (result === Result.Ok) {
+      updated = updated.replace(url, `- [x] ${url}`)
+    }
+  }
+  return updated;
 }
 
 export async function fetchMetadata(

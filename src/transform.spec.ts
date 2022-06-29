@@ -1,11 +1,13 @@
 import { expect } from 'chai';
 import {
-  fetchMetadata,
-  toNote,
-  getUrlsInDoc,
-  getNoteTitle,
   SourceType,
-} from './index';
+  fetchMetadata,
+  getNoteTitle,
+  getUrlsInDoc,
+  toNote,
+  updateContentsFromResults,
+  Result,
+} from './transform';
 import * as sinon from 'sinon';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -276,5 +278,50 @@ describe('Unit: getNoteTile', () => {
         type: SourceType.COMMENTS,
       }),
     ).to.eql('bret@hotmail.com\'s hello world');
+  });
+});
+
+describe('Unit: updateContentsFromResults', () => {
+  it('should do something', () => {
+    const input = `
+https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/
+
+https://news.ycombinator.com/item?id=22043223
+https://thenewstack.io/javascript-hydration-is-a-workaround-not-a-solution/
+
+https://github.com/google/diff-match-patch
+
+not an url https://untools.co/
+
+https://shuvomoy.github.io/blogs/posts/Knuth-on-work-habits-and-problem-solving-and-happiness/?utm_source=hackernewsletter&utm_medium=email&utm_term=fav
+
+https://github.com/PlasmoHQ/plasmo
+
+https://en.wikipedia.org/wiki/Ship_of_Theseus
+`;
+    const expected = `
+https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/
+
+https://news.ycombinator.com/item?id=22043223
+https://thenewstack.io/javascript-hydration-is-a-workaround-not-a-solution/
+
+https://github.com/google/diff-match-patch
+
+not an url https://untools.co/
+
+https://shuvomoy.github.io/blogs/posts/Knuth-on-work-habits-and-problem-solving-and-happiness/?utm_source=hackernewsletter&utm_medium=email&utm_term=fav
+
+- [x] https://github.com/PlasmoHQ/plasmo
+
+https://en.wikipedia.org/wiki/Ship_of_Theseus
+`;
+    const actual = updateContentsFromResults(input, [
+      'https://github.com/PlasmoHQ/plasmo',
+      'https://en.wikipedia.org/wiki/Ship_of_Theseus',
+    ], [
+      Result.Ok,
+      Result.Err,
+    ]);
+    expect(actual).to.eql(expected);
   });
 });
