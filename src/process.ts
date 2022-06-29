@@ -1,5 +1,6 @@
 import { TFile, App, request } from 'obsidian';
 import { getAPI } from 'obsidian-dataview';
+import { PluginSettings } from './constants';
 import {
   fetchMetadata,
   getUrlsInDoc,
@@ -18,32 +19,41 @@ import {
 // 	 	 using lit note template
 // 	 	 title = safe($author's $title)
 // 	 change todo/toread entry to link to note (to be cleaned manually)
-export async function processToReadInbox(app: App) {
+export async function processToReadInbox(
+  app: App,
+  settings: PluginSettings,
+) {
   const dv = getAPI(app);
-  if (!dv) return;
+  if (!dv) return logAbortReason('no dv');
   const toread = dv.page('todo/read');
-  if (!toread) return;
+  if (!toread) return logAbortReason('no toread');
   const contents = await dv.io.load(toread.file.path);
-  if (!contents) return;
-  const file = app.vault.getAbstractFileByPath('todo/read');
-  if (!file || 'children' in file) return;
+  if (!contents) return logAbortReason('no contents');
+  const file = app.vault.getAbstractFileByPath('todo/read.md');
+  if (!file || 'children' in file)
+    return logAbortReason('cant find todo/read');
   const knownUrls = new Set(
     dv.pages('#toread').url.filter(Boolean).array(),
   );
   const urls = getUrlsInDoc(contents).filter(
     (x) => !knownUrls.has(x),
   );
-  const statuses = await Promise.all(
+  await Promise.all(
     urls.map((url) =>
-      fetchMetadata(url, request).then((meta) =>
-        processEntry(meta, app.vault),
-      ),
+      fetchMetadata(url, request).then((meta) => {
+        console.log(`processing new entry '${meta.title}'`);
+        processEntry(meta, app.vault, settings);
+      }),
     ),
   );
-  const updatedContents = updateContentsFromResults(
-    contents,
-    urls,
-    statuses,
-  );
-  await app.vault.modify(file as TFile, updatedContents);
+  // const updatedContents = updateContentsFromResults(
+  //   contents,
+  //   urls,
+  //   statuses,
+  // );
+  // await app.vault.modify(file as TFile, updatedContents);
+}
+
+function logAbortReason(reason: string) {
+  console.log('Early return: %s', reason);
 }

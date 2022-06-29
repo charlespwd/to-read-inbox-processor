@@ -1,5 +1,6 @@
 import { RequestUrlParam, Vault } from 'obsidian';
 import * as cheerio from 'cheerio';
+import { PluginSettings } from './constants';
 
 export enum SourceType {
   ARTICLE = 'article',
@@ -18,6 +19,7 @@ interface SourceMetadata {
   description: string | undefined;
   type: SourceType;
   url: string;
+  canonical: string;
 }
 
 export enum Result {
@@ -28,9 +30,13 @@ export enum Result {
 export async function processEntry(
   meta: SourceMetadata,
   vault: Vault,
+  settings: PluginSettings,
 ): Promise<Result> {
   try {
-    await vault.create(`notes/${getNoteTitle(meta)}.md`, toNote(meta));
+    await vault.create(
+      `${settings.distFolder}/${getNoteTitle(meta)}.md`,
+      toNote(meta),
+    );
     return Result.Ok;
   } catch (e) {
     return Result.Err;
@@ -53,7 +59,7 @@ export function updateContentsFromResults(
   let updated = contents;
   for (const [url, result] of zip(urls, results)) {
     if (result === Result.Ok) {
-      updated = updated.replace(url, `- [x] ${url}`)
+      updated = updated.replace(url, `- ${url}`);
     }
   }
   return updated;
@@ -71,7 +77,8 @@ export async function fetchMetadata(
     author: getAuthor($, canonical),
     description: getDescription($, canonical),
     type: getType($, canonical),
-    url: canonical,
+    url: url,
+    canonical: canonical,
   };
 }
 
@@ -229,6 +236,7 @@ created_date: ${now.toISOString()}
 author: ${meta.author}
 type: ${meta.type}
 url: "${meta.url}"
+canonical: "${meta.canonical}"
 description: >
   ${meta.description?.replace(/\n\s*/g, '\n  ')}
 aliases:
