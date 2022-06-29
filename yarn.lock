@@ -1115,9 +1115,9 @@ obsidian@^0.15.1:
     "@types/codemirror" "0.0.108"
     moment "2.29.3"
 
-"obsidian@github:obsidianmd/obsidian-api#master":
+obsidian@obsidianmd/obsidian-api#master:
   version "0.15.3"
-  resolved "https://codeload.github.com/obsidianmd/obsidian-api/tar.gz/4583a6b8305b05139c6b1bf226ad15e50a9a5987"
+  resolved "https://codeload.github.com/obsidianmd/obsidian-api/tar.gz/d4b79f95ccf3838a305915a137a844250766d023"
   dependencies:
     "@types/codemirror" "0.0.108"
     moment "2.29.3"
