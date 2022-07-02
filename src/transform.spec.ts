@@ -83,7 +83,8 @@ describe('Module: fetchMetadata', () => {
       author: 'google',
       description:
         'Diff Match Patch is a high-performance library in multiple languages that manipulates plain text. - GitHub - google/diff-match-patch: Diff Match Patch is a high-performance library in multiple languages that manipulates plain text.',
-      url: 'https://github.com/google/diff-match-patch',
+      url: 'https://github.com/hello/world',
+      canonical: 'https://github.com/google/diff-match-patch',
       type: 'repo',
     });
   });
@@ -96,7 +97,8 @@ describe('Module: fetchMetadata', () => {
       author: 'Jay Alammar',
       description:
         'Hacker News is one of the leading online communities to discuss software and startup topics. I’ve frequented the site for over ten years and constantly admire the quality of its signal vs. noise ratio. It houses a wealth of knowledge and insightful discussions accumulated over the years. That invaluable',
-      url: 'https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/',
+      url: 'https://article1.com',
+      canonical: 'https://txt.cohere.ai/combing-for-insight-in-10-000-hacker-news-posts-with-text-clustering/',
       type: 'article',
     });
   });
@@ -108,7 +110,8 @@ describe('Module: fetchMetadata', () => {
       author: 'Miško Hevery',
       description:
         'Put simply, hydration is overhead because it duplicates work. Resumability focuses on transferring all of the information (the WHERE and WHAT) from the server to the client.',
-      url: 'https://thenewstack.io/javascript-hydration-is-a-workaround-not-a-solution/',
+      url: 'https://article2.com',
+      canonical: 'https://thenewstack.io/javascript-hydration-is-a-workaround-not-a-solution/',
       type: 'article',
     });
   });
@@ -121,6 +124,7 @@ describe('Module: fetchMetadata', () => {
       author: undefined,
       description: undefined,
       url: 'https://article3.com?a=b',
+      canonical: 'https://article3.com?a=b',
       type: 'website',
     });
   });
@@ -132,7 +136,8 @@ describe('Module: fetchMetadata', () => {
       author: 'Eugene Yan',
       description:
         'Three documents I write (one-pager, design doc, after-action review) and how I structure them.',
-      url: 'https://eugeneyan.com/writing/writing-docs-why-what-how/',
+      url: 'https://article4.com',
+      canonical: 'https://eugeneyan.com/writing/writing-docs-why-what-how/',
       type: 'article',
     });
   });
@@ -145,6 +150,7 @@ describe('Module: fetchMetadata', () => {
       description:
         'Collection of thinking tools and frameworks to help you solve problems, make decisions and understand systems.',
       url: 'https://website.com',
+      canonical: 'https://website.com',
       type: 'website',
     });
   });
@@ -159,13 +165,13 @@ describe('Module: fetchMetadata', () => {
       author: 'beaker52',
       description: undefined,
       url: 'https://news.ycombinator.com/item?id=22043223',
+      canonical: 'https://news.ycombinator.com/item?id=22043223',
       type: SourceType.COMMENTS,
     });
   });
 
   it('should return something appropriate for a hacker news link', async () => {
-    actual = await fetchMetadata(
-      'https://news.ycombinator.com/item?id=31846593',
+    actual = await fetchMetadata('https://news.ycombinator.com/item?id=31846593',
       fetch,
     );
     expect(actual).to.eql({
@@ -173,6 +179,7 @@ describe('Module: fetchMetadata', () => {
       author: 'f311a',
       description: undefined,
       url: 'https://news.ycombinator.com/item?id=31846593',
+      canonical: 'https://news.ycombinator.com/item?id=31846593',
       type: SourceType.COMMENTS,
     });
   });
@@ -184,6 +191,7 @@ describe('Unit: toNote', () => {
   let clock;
 
   beforeEach(() => {
+    process.env.TZ = 'Europe/London';
     clock = sinon.useFakeTimers({
       now: new Date(2019, 1, 1, 0, 0),
       shouldAdvanceTime: true,
@@ -201,6 +209,7 @@ describe('Unit: toNote', () => {
       author: 'f311a',
       description: 'hello world\nok',
       url: 'https://news.ycombinator.com/item?id=31846593',
+      canonical: 'https://news.ycombinator.com/item?id=31846593',
       type: SourceType.COMMENTS,
     });
 
@@ -209,6 +218,7 @@ created_date: 2019-02-01T00:00:00.000Z
 author: f311a
 type: comments
 url: "https://news.ycombinator.com/item?id=31846593"
+canonical: "https://news.ycombinator.com/item?id=31846593"
 description: >
   hello world
   ok
@@ -263,6 +273,7 @@ describe('Unit: getNoteTile', () => {
       getNoteTitle({
         title: 'hello * world?',
         url: 'hh',
+        canonical: 'hh',
         author: undefined,
         description: undefined,
         type: SourceType.COMMENTS,
@@ -273,11 +284,12 @@ describe('Unit: getNoteTile', () => {
       getNoteTitle({
         title: 'hello * world?',
         url: 'hh',
+        canonical: 'hh',
         author: 'bret@hotmail.com',
         description: undefined,
         type: SourceType.COMMENTS,
       }),
-    ).to.eql('bret@hotmail.com\'s hello world');
+    ).to.eql("bret@hotmail.com's hello world");
   });
 });
 
@@ -311,17 +323,18 @@ not an url https://untools.co/
 
 https://shuvomoy.github.io/blogs/posts/Knuth-on-work-habits-and-problem-solving-and-happiness/?utm_source=hackernewsletter&utm_medium=email&utm_term=fav
 
-- [x] https://github.com/PlasmoHQ/plasmo
+- https://github.com/PlasmoHQ/plasmo
 
 https://en.wikipedia.org/wiki/Ship_of_Theseus
 `;
-    const actual = updateContentsFromResults(input, [
-      'https://github.com/PlasmoHQ/plasmo',
-      'https://en.wikipedia.org/wiki/Ship_of_Theseus',
-    ], [
-      Result.Ok,
-      Result.Err,
-    ]);
+    const actual = updateContentsFromResults(
+      input,
+      [
+        'https://github.com/PlasmoHQ/plasmo',
+        'https://en.wikipedia.org/wiki/Ship_of_Theseus',
+      ],
+      [Result.Ok, Result.Err],
+    );
     expect(actual).to.eql(expected);
   });
 });

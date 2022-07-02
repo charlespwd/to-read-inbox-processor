@@ -1,9 +1,21 @@
-import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import {
+  App,
+  Notice,
+  Plugin,
+  PluginSettingTab,
+  Setting,
+} from 'obsidian';
 import { PluginSettings } from './src/constants';
-import { processToReadInbox } from './src/process';
+import {
+  processToReadInbox,
+  processDictionaryItems,
+  defineWord,
+  updateCardCount,
+} from './src/process';
 
 const DEFAULT_SETTINGS: PluginSettings = {
   distFolder: 'toread',
+  total: 0,
 };
 
 export default class ProcessInboxPlugin extends Plugin {
@@ -11,6 +23,7 @@ export default class ProcessInboxPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
+    this.settings.total = 0;
 
     // This adds a simple command that can be triggered anywhere
     this.addCommand({
@@ -22,8 +35,58 @@ export default class ProcessInboxPlugin extends Plugin {
       },
     });
 
+    // This adds a simple command that can be triggered anywhere
+    this.addCommand({
+      id: 'process-dictionary-items',
+      name: 'Process dictionary items',
+      callback: () => {
+        console.log('processing inbox...');
+        processDictionaryItems(this.app, this.settings).then(
+          (newWords) => {
+            new Notice(
+              `All done! added definitions for ${
+                newWords ? newWords.length : 0
+              } new words.`,
+            );
+          },
+        );
+      },
+    });
+
+    // // This adds a simple command that can be triggered anywhere
+    // this.addCommand({
+    //   id: 'update-card-count',
+    //   name: 'Update card count (tmp)',
+    //   callback: () => {
+    //     console.log('updating card count');
+    //     updateCardCount(this.app, this.settings);
+    //   },
+    // });
+
+    // This adds a simple command that can be triggered anywhere
+    // this.addCommand({
+    //   id: 'backfill counts',
+    //   name: 'backfill counts (tmp)',
+    //   callback: () => {
+    //     console.log('updating card count');
+    //     backfillCardCount(this.app);
+    //   },
+    // });
+
+    // This adds a complex command that can check whether the current state of the app allows execution of the command
+    this.addCommand({
+      id: 'define-word',
+      name: 'Define word by current file name',
+      checkCallback: (checking: boolean) =>
+        defineWord(this.app, this.settings, checking),
+    });
+
     // This adds a settings tab so the user can configure various aspects of the plugin
     this.addSettingTab(new ProcessInboxPluginTab(this.app, this));
+
+    this.registerEvent(this.app.vault.on('modify', () => {
+      updateCardCount(this.app, this.settings);
+    }))
   }
 
   onunload() {}
