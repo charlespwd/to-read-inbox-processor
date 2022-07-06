@@ -43,6 +43,7 @@ export async function processToReadInbox(
   const urls = getUrlsInDoc(contents).filter(
     (x) => !knownUrls.has(x),
   );
+  if (urls.length === 0) return;
   const statuses = await Promise.all(
     urls.map((url) =>
       fetchMetadata(url, request).then((meta) => {
@@ -56,6 +57,7 @@ export async function processToReadInbox(
     urls,
     statuses,
   );
+  if (updatedContents === contents) return;
   await app.vault.modify(file as TFile, updatedContents);
 }
 
@@ -73,7 +75,13 @@ export async function processDictionaryItems(
     .pages('"notes"')
     .filter((x) => !!x['kindle-sync'])
     .file.path.array();
-  const knownWords = new Set(dv.pages('"words"').file.name.array());
+  const knownWords = new Set(
+    dv
+      .pages('"notes"')
+      .file.name.array()
+      .filter((x: string) => /^\w+$/.test(x))
+      .map((x: string) => x.toLowerCase()),
+  );
   const words = await Promise.all(
     files.map((path: string) => dv.io.load(path).then(extractWords)),
   ).then((w) => w.flatMap((x) => x));
@@ -81,8 +89,12 @@ export async function processDictionaryItems(
   await Promise.all(
     newWords.map(async (word) => {
       const definition = await fetchWord(word, request);
+      if (!definition) {
+        console.error('did not find definition for %s', word)
+        return;
+      }
       return app.vault.create(
-        `words/${word}.md`,
+        `notes/${word}.md`,
         definitionFileContents(definition),
       );
     }),
@@ -124,6 +136,7 @@ const header = [['date', 'total']];
 export async function updateCardCount(
   app: any,
   settings: PluginSettings,
+  force = false,
 ) {
   const srp: any =
     app?.plugins?.plugins?.['obsidian-spaced-repetition'];
@@ -131,9 +144,9 @@ export async function updateCardCount(
   const stats = srp.cardStats as Stats;
   if (!stats) return logAbortReason('no card stats');
   const total = stats.newCount + stats.youngCount + stats.matureCount;
+  if (total === 0) return logAbortReason('total is 0');
   if (settings.total === 0) settings.total = total;
-  if (total === settings.total)
-    return;
+  if (!force && total === settings.total) return;
   settings.total = total;
   const dv = getAPI(app);
   if (!dv) return logAbortReason('no dv');
@@ -158,10 +171,13 @@ export async function updateCardCount(
     return;
   }
 
-  const csv = await dv.io.load(path);
+  const csv = await dv.io.csv(path);
   if (!csv) return logAbortReason('no data??');
-  const now = dv.luxon.DateTime.now().toISODate();
-  const lines = parseCSV(csv).filter(([date]) => date != now);
+  const now = dv.luxon.DateTime.now().set({ hour: 12 }).toISODate();
+  const lines = csv
+    .array()
+    .filter(({ date }) => date.set({ hour: 12 }).toISODate() !== now)
+    .map(({ date, total }) => [date.toISODate(), total]);
   lines.push([now, total.toString()]);
   vault.modify(
     file as TFile,
@@ -170,6 +186,8 @@ export async function updateCardCount(
       .map((x) => x.join(','))
       .join('\n'),
   );
+
+  console.log('adding %s %s', now, total.toString());
 }
 
 export async function backfillCardCount(app: any) {

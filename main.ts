@@ -12,6 +12,7 @@ import {
   defineWord,
   updateCardCount,
 } from './src/process';
+import debounce from 'lodash.debounce';
 
 const DEFAULT_SETTINGS: PluginSettings = {
   distFolder: 'toread',
@@ -54,14 +55,13 @@ export default class ProcessInboxPlugin extends Plugin {
     });
 
     // // This adds a simple command that can be triggered anywhere
-    // this.addCommand({
-    //   id: 'update-card-count',
-    //   name: 'Update card count (tmp)',
-    //   callback: () => {
-    //     console.log('updating card count');
-    //     updateCardCount(this.app, this.settings);
-    //   },
-    // });
+    this.addCommand({
+      id: 'update-card-count',
+      name: 'Update card count (force)',
+      callback: () => {
+        updateCardCount(this.app, this.settings, true);
+      },
+    });
 
     // This adds a simple command that can be triggered anywhere
     // this.addCommand({
@@ -84,9 +84,25 @@ export default class ProcessInboxPlugin extends Plugin {
     // This adds a settings tab so the user can configure various aspects of the plugin
     this.addSettingTab(new ProcessInboxPluginTab(this.app, this));
 
-    this.registerEvent(this.app.vault.on('modify', () => {
-      updateCardCount(this.app, this.settings);
-    }))
+    this.registerEvent(
+      this.app.vault.on('modify', () => {
+        updateCardCount(this.app, this.settings);
+      }),
+    );
+
+    this.registerEvent(
+      this.app.vault.on(
+        'modify',
+        debounce((file) => {
+          if ('children' in file) return;
+          if (file.path !== 'todo/read.md') return;
+          processToReadInbox(this.app, this.settings);
+        }, 5000, {
+          leading: false,
+          trailing: true,
+        }),
+      ),
+    );
   }
 
   onunload() {}

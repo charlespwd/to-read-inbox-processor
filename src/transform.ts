@@ -39,6 +39,7 @@ export async function processEntry(
     );
     return Result.Ok;
   } catch (e) {
+    console.error(e);
     return Result.Err;
   }
 }
@@ -69,6 +70,18 @@ export async function fetchMetadata(
   url: string,
   fetch: (p: RequestUrlParam) => Promise<string>,
 ): Promise<SourceMetadata> {
+  let match = url.match(/\.[^\/]+\/([^.]+)\.pdf$/);
+  if (match) {
+    return {
+      title: match[1],
+      author: undefined,
+      description: undefined,
+      type: SourceType.PAPER,
+      canonical: url,
+      url,
+    };
+  }
+
   const contents = await fetch({ url });
   const $ = cheerio.load(contents);
   const canonical = getUrl($, url);
@@ -231,23 +244,27 @@ export function getUrlsInDoc(doc: string): string[] {
 
 export function toNote(meta: SourceMetadata): string {
   const now = new Date();
-  return `---
-created_date: ${now.toISOString()}
-author: ${meta.author}
-type: ${meta.type}
-url: "${meta.url}"
-canonical: "${meta.canonical}"
-description: >
-  ${meta.description?.replace(/\n\s*/g, '\n  ')}
-aliases:
-  - "${meta.title}"
-tags:
+  const frontmatter = [
+    `creation_date: ${now.toISOString().replace(/T.*$/, '')}`,
+    meta.author && `author: ${meta.author}`,
+    `type: ${meta.type}`,
+    `url: "${meta.url}"`,
+    `canonical: "${meta.canonical}"`,
+    meta.description &&
+      `description: >
+  ${meta.description?.replace(/\n\s*/g, '\n  ')}`,
+    `aliases:
+  - "${meta.title}"`,
+    `tags:
   - toread
-  - lit
+  - lit`,
+  ];
+  return `---
+${frontmatter.filter(Boolean).join('\n')}
 ---
 
-## Source
+## Sources
 
-<${meta.url}>
+1. <${meta.url}>
 `;
 }

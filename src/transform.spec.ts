@@ -214,7 +214,7 @@ describe('Unit: toNote', () => {
     });
 
     expected = `---
-created_date: 2019-02-01T00:00:00.000Z
+creation_date: 2019-02-01
 author: f311a
 type: comments
 url: "https://news.ycombinator.com/item?id=31846593"
@@ -229,9 +229,9 @@ tags:
   - lit
 ---
 
-## Source
+## Sources
 
-<https://news.ycombinator.com/item?id=31846593>
+1. <https://news.ycombinator.com/item?id=31846593>
 `;
     expect(actual).to.eql(expected);
   });
